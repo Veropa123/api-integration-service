@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: api-integration-service
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeployTrigger: commit
