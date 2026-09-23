@@ -1,6 +1,12 @@
 # API Integration Service
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Open_App-4C6EF5?style=for-the-badge)](https://api-integration-service.onrender.com/)
+[![API Docs](https://img.shields.io/badge/API_Docs-Swagger-009688?style=for-the-badge)](https://api-integration-service.onrender.com/docs)
+[![GitHub](https://img.shields.io/badge/Source_Code-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/Veropa123/api-integration-service)
+
 A production-style backend project for consuming, validating, normalizing, persisting, and exposing third-party API data.
+
+> **Live application:** https://api-integration-service.onrender.com/
 
 ## Overview
 
@@ -44,7 +50,7 @@ The demo integrates with the public JSONPlaceholder users API. The provider-spec
 - Pytest automated tests
 - Docker and Docker Compose
 - GitHub Actions continuous integration
-- Render deployment configuration
+- Public deployment on Render
 
 ## Tech Stack
 
@@ -59,6 +65,7 @@ The demo integrates with the public JSONPlaceholder users API. The provider-spec
 - Pytest
 - Docker
 - GitHub Actions
+- Render
 
 ## API Endpoints
 
@@ -70,6 +77,22 @@ The demo integrates with the public JSONPlaceholder users API. The provider-spec
 | POST | `/sync/users` | Synchronize upstream users into the local database |
 | GET | `/users` | Return persisted synchronized users |
 | GET | `/docs` | Interactive Swagger/OpenAPI documentation |
+
+## Live Demo
+
+Open the deployed application:
+
+https://api-integration-service.onrender.com/
+
+Interactive API documentation:
+
+https://api-integration-service.onrender.com/docs
+
+Health check:
+
+https://api-integration-service.onrender.com/health
+
+> The free Render instance may take a short time to wake up after periods of inactivity.
 
 ## Project Structure
 
@@ -106,40 +129,28 @@ api-integration-service/
 
 ## Run Locally
 
-Clone the repository:
-
 ```bash
 git clone https://github.com/Veropa123/api-integration-service.git
 cd api-integration-service
-```
-
-Create a virtual environment:
-
-```bash
 python -m venv .venv
 ```
 
-Activate it on Windows:
+Activate on Windows:
 
 ```bash
 .venv\Scripts\activate
 ```
 
-Activate it on macOS/Linux:
+Activate on macOS/Linux:
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install dependencies:
+Install dependencies and start the app:
 
 ```bash
 pip install -r requirements.txt
-```
-
-Start the application:
-
-```bash
 uvicorn app.main:app --reload
 ```
 
@@ -162,11 +173,9 @@ docker compose up --build
 pytest
 ```
 
-GitHub Actions also runs the test suite automatically on pushes to `main` and on pull requests.
+GitHub Actions runs the test suite automatically on pushes to `main` and on pull requests.
 
 ## Environment Variables
-
-Copy `.env.example` to `.env` when local customization is required.
 
 ```env
 APP_NAME=API Integration Service
@@ -185,16 +194,16 @@ For PostgreSQL, replace `DATABASE_URL` with a SQLAlchemy-compatible PostgreSQL c
 3. The application fetches data from the third-party API.
 4. The integration client normalizes the provider-specific payload.
 5. The sync service inserts new records or updates existing records.
-6. The dashboard loads the persisted users from the application's own API.
+6. The dashboard loads the synchronized users from the application's API.
 7. Swagger documentation can be used to inspect and test every endpoint directly.
 
 ## Portfolio Purpose
 
-This project is designed as a complete backend case study rather than a simple API call example. It demonstrates separation of concerns, integration boundaries, typed models, persistence, error handling, testing, containerization, CI, and deployment preparation.
+This project is designed as a complete backend case study rather than a simple API-call example. It demonstrates separation of concerns, integration boundaries, typed models, persistence, error handling, testing, containerization, CI, deployment, and technical documentation.
 
 ## Status
 
-**Functional first version — ready for deployment.**
+**Live and publicly deployed.**
 
 ## License
 
