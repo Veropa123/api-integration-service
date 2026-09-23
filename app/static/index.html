@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Integration Service</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; margin: 0; background: #f5f7fb; color: #172033; }
+    .shell { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 48px 0; }
+    .hero { display:flex; justify-content:space-between; gap:24px; align-items:flex-start; margin-bottom:24px; }
+    h1 { margin:8px 0 10px; font-size:clamp(2.2rem,5vw,4rem); letter-spacing:-.04em; }
+    .eyebrow { color:#4f67e8; font-size:.72rem; font-weight:800; letter-spacing:.14em; }
+    p { color:#657083; line-height:1.7; }
+    .panel { background:white; border:1px solid #e3e8f0; border-radius:20px; padding:24px; box-shadow:0 16px 45px rgba(36,48,80,.07); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+    button,a { border-radius:10px; padding:11px 16px; font-weight:700; text-decoration:none; border:1px solid #dbe1eb; background:#fff; color:#273149; cursor:pointer; }
+    button.primary { background:#5269e8; color:#fff; border-color:#5269e8; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+    .card { border:1px solid #e5e9f0; border-radius:14px; padding:16px; }
+    .muted { color:#7a8496; font-size:.9rem; }
+    .status { margin-top:14px; font-weight:700; color:#5269e8; }
+    table { width:100%; border-collapse:collapse; margin-top:18px; }
+    th,td { text-align:left; padding:12px 10px; border-bottom:1px solid #edf0f5; font-size:.9rem; }
+    th { color:#6a7385; }
+    @media (max-width:800px) { .hero{flex-direction:column}.grid{grid-template-columns:1fr} table{display:block;overflow:auto} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div>
+        <span class="eyebrow">BACKEND & API INTEGRATION PORTFOLIO PROJECT</span>
+        <h1>API Integration Service</h1>
+        <p>Sync third-party user data, normalize it, persist it locally, and expose it through a clean FastAPI backend.</p>
+      </div>
+      <a href="/docs" target="_blank">API Docs</a>
+    </header>
+
+    <section class="panel">
+      <div class="actions">
+        <button class="primary" id="sync">Sync external API</button>
+        <button id="load">Load stored users</button>
+      </div>
+      <div class="grid">
+        <div class="card"><div class="muted">Upstream provider</div><strong>JSONPlaceholder</strong></div>
+        <div class="card"><div class="muted">Persistence</div><strong>SQLAlchemy</strong></div>
+        <div class="card"><div class="muted">API framework</div><strong>FastAPI</strong></div>
+      </div>
+      <div id="status" class="status">Ready.</div>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>City</th></tr></thead>
+        <tbody id="users"></tbody>
+      </table>
+    </section>
+  </div>
+  <script>
+    const statusEl = document.getElementById("status");
+    const body = document.getElementById("users");
+
+    document.getElementById("sync").onclick = async () => {
+      statusEl.textContent = "Synchronizing...";
+      const response = await fetch("/sync/users", { method: "POST" });
+      const data = await response.json();
+      if (!response.ok) {
+        statusEl.textContent = data.detail || "Sync failed.";
+        return;
+      }
+      statusEl.textContent = "Imported " + data.imported + ", updated " + data.updated + ".";
+      await loadUsers();
+    };
+
+    document.getElementById("load").onclick = loadUsers;
+
+    async function loadUsers() {
+      const response = await fetch("/users");
+      const users = await response.json();
+      body.innerHTML = users.map(user =>
+        "<tr><td>" + escapeHtml(user.name) + "</td><td>" +
+        escapeHtml(user.email) + "</td><td>" +
+        escapeHtml(user.company) + "</td><td>" +
+        escapeHtml(user.city) + "</td></tr>"
+      ).join("");
+      statusEl.textContent = users.length + " stored users loaded.";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+  </script>
+</body>
+</html>
